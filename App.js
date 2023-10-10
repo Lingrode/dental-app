@@ -1,10 +1,29 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react';
 import styled from 'styled-components/native';
+import { useFonts } from 'expo-font';
+// import * as SplashScreen from 'expo-splash-screen';
 
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    'SFUIText-Regular': require('./assets/fonts/sfuitext-regular.otf'),
+    'SFUIText-Semibold': require('./assets/fonts/sfuitext-semibold.otf'),
+    'SFUIText-Bold': require('./assets/fonts/sfuitext-bold.otf'),
+    'SFUIText-Heavy': require('./assets/fonts/sfuitext-heavy.otf'),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
   return (
-    <Container>
+    <Container onLayout={onLayoutRootView}>
       <Group>
         <GroupTitle>11 вересня</GroupTitle>
         <GroupItem>
@@ -37,26 +56,30 @@ export default function App() {
   );
 }
 
+
+
 const GroupDate = styled.Text`
   background: ${props => props.active ? '#2A86FF' : '#E9F5FF'};
   color: ${props => props.active ? '#fff' : '#4294FF'};
   border-radius: 18px;
+  font-family: 'SFUIText-Bold';
   text-align: center;
   font-size: 18px;
-  font-weight: 800;
   width: 75px;
   height: 35px;
   line-height: 38px;
 `;
 
 const GrayText = styled.Text`
+  font-family: 'SFUIText-Regular';
   color: #8B979F;
   font-size: 18px;
 `;
 
 const FullName = styled.Text`
+  font-family: 'SFUIText-Bold';
   font-size: 18px;
-  font-weight: 600;
+
 `;
 
 const Avatar = styled.Image`
@@ -75,9 +98,10 @@ const GroupItem = styled.View`
 `;
 
 const GroupTitle = styled.Text`
+  font-family: 'SFUIText-Bold';
   color: #000;
   font-size: 24px;
-  font-weight: 800;
+  
   line-height: 30px;
 `;
 
